@@ -1,0 +1,637 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>RATIO LEARN</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Konsep tata letak: bilah atas lekat + isi satu kolom; blok kurma (emas) dan air (biru) jadi motif rasio. */
+:root{
+  --bg:#F2F6F5; --surface:#FFFFFF; --surface2:#E7EFED; --ink:#142B29; --muted:#4F6766; --line:#CCDAD7;
+  --brand:#0B6E66; --brand-ink:#FFFFFF; --brand-soft:#D3EBE7;
+  --gold-soft:#FBEBCB; --good:#1B7F4B; --good-soft:#D8F0E1; --bad:#B3392F; --bad-soft:#F8DEDA;
+  --kurma:#C8861F; --air:#2A9FB8;
+  --f-head:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --f-body:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1A19; --surface:#142524; --surface2:#1B302E; --ink:#E6F1EF; --muted:#9DB5B2; --line:#294541;
+  --brand:#4FC3B6; --brand-ink:#06201D; --brand-soft:#173B37; --gold-soft:#3A2D10;
+  --good:#5ED08F; --good-soft:#143524; --bad:#F08A80; --bad-soft:#3E1B18; --kurma:#E0A23A; --air:#4FB7D1; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1A19; --surface:#142524; --surface2:#1B302E; --ink:#E6F1EF; --muted:#9DB5B2; --line:#294541;
+  --brand:#4FC3B6; --brand-ink:#06201D; --brand-soft:#173B37; --gold-soft:#3A2D10;
+  --good:#5ED08F; --good-soft:#143524; --bad:#F08A80; --bad-soft:#3E1B18; --kurma:#E0A23A; --air:#4FB7D1; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f-body);margin:0;min-height:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+h1,h2,h3,h4{font-family:var(--f-head);line-height:1.2;margin:0 0 .5em;text-wrap:balance}
+h1{font-size:clamp(1.7rem,4.5vw,2.5rem)} h2{font-size:1.4rem} h3{font-size:1.15rem} h4{font-size:1rem}
+p{margin:0 0 .8em;max-width:68ch} ul,ol{margin:0 0 .8em;padding-left:1.25em;max-width:68ch} li{margin:.2em 0}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* bilah atas */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.topin{display:flex;align-items:center;gap:16px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:700 1.15rem var(--f-head);white-space:nowrap}
+.logo{display:flex;gap:3px}.logo i{display:block;height:18px;border-radius:4px}.logo i:first-child{width:26px;background:var(--kurma)}.logo i:last-child{width:13px;background:var(--air)}
+nav{min-width:0;overflow-x:auto;scrollbar-width:thin}
+nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0 0 2px}
+nav a{display:block;padding:7px 12px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;white-space:nowrap}
+nav a:hover{background:var(--surface2);color:var(--ink)}
+nav a[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
+.subnav{background:var(--surface2);border-bottom:1px solid var(--line)}
+.subnav ul{display:flex;gap:6px;list-style:none;margin:0;padding:8px 0;overflow-x:auto;max-width:none}
+.subnav a{display:block;padding:5px 12px;border-radius:8px;text-decoration:none;color:var(--ink);font-weight:600;font-size:.85rem;white-space:nowrap;border:1px solid var(--line);background:var(--surface)}
+.subnav a[aria-current="page"]{background:var(--brand-soft);border-color:var(--brand)}
+.subnav a.done::after{content:" \2713";color:var(--good)}
+
+main{padding-block:28px 56px;outline:none}
+footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);font-size:.88rem}
+footer p{margin:.2em 0;max-width:none}
+
+/* komponen */
+.eyebrow{font:600 .78rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 .4em}
+.lead{font-size:1.08rem;color:var(--muted)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.grid2{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+a.card{display:block;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
+a.card:hover{border-color:var(--brand);transform:translateY(-2px)}
+.card h3{margin-bottom:.3em}
+.card p{color:var(--muted);font-size:.93rem;margin-bottom:.5em}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--brand-soft);color:var(--ink);font-size:.78rem;font-weight:600}
+.chip.gold{background:var(--gold-soft)} .chip.ok{background:var(--good-soft);color:var(--good)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:0;background:var(--brand);color:var(--brand-ink);font:700 .95rem var(--f-body);cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pagehead{margin-bottom:22px}
+.note{background:var(--gold-soft);border-radius:10px;padding:12px 14px;font-size:.93rem;max-width:68ch}
+.note b{display:block;margin-bottom:2px}
+.tw{overflow-x:auto;margin:0 0 .9em}
+table{border-collapse:collapse;min-width:260px}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+th{background:var(--surface2);font-size:.9rem}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.2;margin:0 3px;font-size:.95em}
+.frac span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px}
+.math{font-family:var(--f-head);font-size:1.1rem;background:var(--surface2);border-radius:10px;padding:10px 14px;display:inline-block;margin:.3em 0 .8em}
+
+/* hero */
+.hero{background:var(--brand);color:var(--brand-ink);border-radius:20px;padding:clamp(22px,5vw,44px);display:grid;gap:24px;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:center;margin-bottom:26px}
+.hero h1{margin-bottom:.15em;font-size:clamp(2rem,6vw,3.2rem)}
+.hero .tag{font:600 1.05rem var(--f-head);opacity:.92;margin-bottom:.8em}
+.hero p{color:inherit;opacity:.95}
+.hero .btn{background:var(--brand-ink);color:var(--brand)}
+.hero .btn.ghost{background:transparent;color:var(--brand-ink);border-color:var(--brand-ink)}
+.demo{background:rgba(255,255,255,.14);border-radius:14px;padding:16px;display:grid;gap:10px}
+.demo .r{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.demo .lb{font-size:.8rem;font-weight:600;min-width:52px}
+.demo .big{font:700 1.5rem var(--f-head);text-align:center;margin-top:4px}
+@media(max-width:720px){.hero{grid-template-columns:1fr}}
+.blk{display:inline-block;width:22px;height:22px;border-radius:5px}
+.blk.k{background:var(--kurma)} .blk.a{background:var(--air)}
+.demo .blk.k{background:#F2B544} .demo .blk.a{background:#6FD3E8}
+.blk.sm{width:14px;height:14px;border-radius:3px}
+
+/* progres */
+.prog{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--good);width:0;transition:width .4s}
+.prog.bar{background:var(--surface2)} .prog.bar i{background:var(--air)}
+
+/* langkah pertemuan */
+.step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;min-width:0}
+.step>h2{display:flex;align-items:center;gap:10px}
+.sn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font:700 .9rem var(--f-body);flex:none}
+.islam{border-color:var(--kurma);background:linear-gradient(0deg,var(--surface),var(--surface))}
+.islam .sn{background:var(--kurma);color:#1b1200}
+.quote{border-left:4px solid var(--kurma);padding:4px 0 4px 14px;margin:.4em 0 1em;max-width:68ch}
+.quote small{display:block;color:var(--muted)}
+.alur{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.alur button{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:4px 10px;border-radius:8px;font:600 .8rem var(--f-body);cursor:pointer}
+.alur button:hover{border-color:var(--brand)}
+
+/* widget */
+.wg{background:var(--surface2);border-radius:12px;padding:16px;display:grid;gap:14px;min-width:0}
+.ctrl{display:grid;gap:4px}
+.ctrl label,.fld label{font-weight:600;font-size:.9rem}
+.ctrl output{font-weight:700;color:var(--brand);margin-left:6px}
+input[type=range]{width:100%;accent-color:var(--brand)}
+input[type=text],input[type=number],select,textarea,.cell{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;max-width:260px}
+textarea{max-width:68ch;min-height:84px;resize:vertical}
+.cell{max-width:110px}
+.fld{display:grid;gap:4px;margin-bottom:10px}
+.stage{display:grid;gap:8px}
+.stage .r{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.stage .lb{font-weight:600;font-size:.85rem;min-width:56px;color:var(--muted)}
+.readout{background:var(--surface);border-radius:10px;padding:10px 14px;font-size:1.02rem;border:1px solid var(--line)}
+.readout b{font-family:var(--f-head);font-size:1.15rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:3px 10px;font-weight:600;font-size:.9rem}
+.chips span.on{border-color:var(--brand);background:var(--brand-soft)}
+.bar{height:22px;border-radius:6px;background:var(--air);transition:width .25s;min-width:4px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.ok{color:var(--good)} .no{color:var(--bad)}
+.cell.right,select.right{border-color:var(--good);background:var(--good-soft)}
+.cell.wrong,select.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fb{font-weight:600;margin:.6em 0 0}
+
+/* soal */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.q .qt{font-weight:600;margin-bottom:8px}
+.q .qn{color:var(--brand)}
+.opts{display:grid;gap:6px;margin-bottom:10px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer}
+.opt input{margin-top:5px;accent-color:var(--brand)}
+.opt:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
+.q.ok-q{border-color:var(--good)} .q.no-q{border-color:var(--bad)}
+.q .exp{margin:.6em 0 0;padding:10px 12px;border-radius:8px;font-size:.93rem;max-width:68ch}
+.q.ok-q .exp{background:var(--good-soft)} .q.no-q .exp{background:var(--bad-soft)}
+.q .res{font-weight:700;margin:.5em 0 0}
+.sum{background:var(--brand-soft);border-radius:12px;padding:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.sum b{font:700 1.6rem var(--f-head)}
+
+/* peta materi */
+.flow{list-style:none;padding:0;margin:0;display:grid;gap:0;max-width:760px}
+.flow li{position:relative;padding:0 0 18px 54px;margin:0}
+.flow li::before{content:"";position:absolute;left:19px;top:40px;bottom:0;width:2px;background:var(--line)}
+.flow li:last-child::before{display:none}
+.flow .nb{position:absolute;left:0;top:0;width:40px;height:40px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font:700 1.05rem var(--f-head)}
+.flow a{text-decoration:none;color:var(--ink);display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.flow a:hover{border-color:var(--brand)}
+.flow small{color:var(--muted);display:block}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media(max-width:560px){.topin{flex-direction:column;align-items:stretch;gap:6px}.step{padding:16px}}
+</style>
+
+<header class="top"><div class="wrap topin">
+  <a class="brand" href="#beranda"><span class="logo" aria-hidden="true"><i></i><i></i></span>RATIO LEARN</a>
+  <nav aria-label="Menu utama"><ul id="nav"></ul></nav>
+</div><div class="subnav" id="subnav" hidden><div class="wrap"><ul id="sublist"></ul></div></div></header>
+<div class="wrap"><main id="app" tabindex="-1"></main></div>
+<footer><div class="wrap">
+  <p><b>RATIO LEARN</b> · Explore Ratios, Learn with Values · Media pembelajaran matematika kelas VII SMP</p>
+  <p>Disusun oleh: Nama Mahasiswa · Mata kuliah Integrasi Pendidikan Matematika dan Islam</p>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+/* ---------- util ---------- */
+var S={done:{},scores:{},notes:{}};
+try{var raw=localStorage.getItem('ratiolearn-v1');if(raw){var p=JSON.parse(raw);S.done=p.done||{};S.scores=p.scores||{};S.notes=p.notes||{};}}catch(e){}
+function save(){try{localStorage.setItem('ratiolearn-v1',JSON.stringify(S));}catch(e){}}
+function gcd(a,b){return b?gcd(b,a%b):Math.abs(a);}
+function fmt(n){return Number.isInteger(n)?String(n):n.toFixed(1).replace('.',',');}
+function rp(n){return 'Rp'+Math.round(n).toLocaleString('id-ID');}
+function fr(a,b){return '<span class="frac"><span>'+a+'</span><span>'+b+'</span></span>';}
+function blocks(n,c,sm){var s='';for(var i=0;i<n;i++)s+='<span class="blk '+c+(sm?' sm':'')+'"></span>';return s;}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function $(s,r){return (r||document).querySelector(s);}
+function parseNum(v){
+  v=String(v).replace(/rp|\s/gi,'');
+  if(!v)return NaN;
+  if(/^\d{1,3}(\.\d{3})+$/.test(v))v=v.replace(/\./g,'');
+  v=v.replace(',','.');
+  return /^-?\d+(\.\d+)?$/.test(v)?parseFloat(v):NaN;
+}
+function parseRatio(v){var m=String(v).match(/^\s*(\d+)\s*[:\/]\s*(\d+)\s*$/);return m?[+m[1],+m[2]]:null;}
+
+/* ---------- komponen soal ---------- */
+function mc(q,o,a,e){return {t:'mc',q:q,o:o,a:a,e:e};}
+function nu(q,a,e,u){return {t:'num',q:q,a:a,e:e,u:u||''};}
+function ra(q,a,e,s){return {t:'ratio',q:q,a:a,e:e,s:!!s};}
+
+function quiz(root,qs,key){
+  var done=[],score=0;
+  function draw(){
+    done=qs.map(function(){return null;});score=0;
+    root.innerHTML='';
+    qs.forEach(function(q,i){
+      var d=document.createElement('div');d.className='q';
+      var inner='<div class="qt"><span class="qn">'+(i+1)+'.</span> '+q.q+'</div>';
+      if(q.t==='mc'){
+        inner+='<div class="opts" role="radiogroup" aria-label="Soal '+(i+1)+'">'+q.o.map(function(o,j){
+          return '<label class="opt"><input type="radio" name="'+key+'-'+i+'" value="'+j+'"><span>'+o+'</span></label>';}).join('')+'</div>';
+      }else{
+        inner+='<div class="fld"><label for="'+key+'-'+i+'">Jawabanmu'+(q.t==='ratio'?' (tulis seperti 3:5)':(q.u?' ('+q.u+')':''))+'</label><input type="text" id="'+key+'-'+i+'" autocomplete="off" inputmode="'+(q.t==='ratio'?'text':'decimal')+'"></div>';
+      }
+      inner+='<button class="btn" type="button">Periksa</button><div class="out" role="status"></div>';
+      d.innerHTML=inner;root.appendChild(d);
+      $('button',d).addEventListener('click',function(){check(i,d);});
+    });
+    var s=document.createElement('div');s.className='out-sum';root.appendChild(s);
+  }
+  function check(i,d){
+    var q=qs[i],ok=false,out=$('.out',d);
+    if(q.t==='mc'){
+      var sel=d.querySelector('input:checked');
+      if(!sel){out.innerHTML='<p class="res no">Pilih satu jawaban dulu.</p>';return;}
+      ok=(+sel.value===q.a);
+    }else{
+      var inp=$('input',d),v=inp.value;
+      if(q.t==='num'){var n=parseNum(v);if(isNaN(n)){out.innerHTML='<p class="res no">Tulis jawabanmu berupa angka.</p>';return;}ok=Math.abs(n-q.a)<1e-6;}
+      else{var r=parseRatio(v);if(!r){out.innerHTML='<p class="res no">Tulis dengan format a:b, misalnya 3:5.</p>';return;}
+        ok=q.s?(r[0]===q.a[0]&&r[1]===q.a[1]):(r[0]*q.a[1]===r[1]*q.a[0]&&r[1]>0);}
+    }
+    done[i]=ok;if(ok)score++;
+    d.classList.add(ok?'ok-q':'no-q');
+    d.querySelectorAll('input,button').forEach(function(x){x.disabled=true;});
+    out.innerHTML='<p class="res '+(ok?'ok':'no')+'">'+(ok?'Benar, bagus!':'Belum tepat.')+'</p><p class="exp">'+q.e+'</p>';
+    if(done.every(function(x){return x!==null;}))finish();
+  }
+  function finish(){
+    var best=S.scores[key];if(!best||score>best.s){S.scores[key]={s:score,t:qs.length};save();}
+    var pct=score/qs.length,msg=pct===1?'Sempurna. Pemahamanmu sudah kuat.':pct>=0.7?'Bagus. Baca lagi pembahasan soal yang salah.':'Ayo ulangi materinya, lalu coba lagi.';
+    var s=$('.out-sum',root);
+    s.innerHTML='<div class="sum"><div><div>Skormu</div><b>'+score+' / '+qs.length+'</b><div>'+msg+'</div></div><button class="btn" type="button">Ulangi soal</button></div>';
+    $('button',s).addEventListener('click',function(){draw();root.scrollIntoView({block:'start'});});
+    s.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+  draw();
+}
+
+function fillTable(root,head,rows,okMsg){
+  root.innerHTML='<div class="tw"><table><thead><tr><th>'+head[0]+'</th><th>'+head[1]+'</th></tr></thead><tbody>'+
+    rows.map(function(r,i){return '<tr><td>'+r[0]+'</td><td><input class="cell" type="text" inputmode="decimal" data-i="'+i+'" aria-label="'+head[1]+' untuk '+r[0]+'"></td></tr>';}).join('')+
+    '</tbody></table></div><button class="btn" type="button">Periksa tabel</button><p class="fb" role="status"></p>';
+  $('button',root).addEventListener('click',function(){
+    var good=0,blank=0;
+    root.querySelectorAll('.cell').forEach(function(c){
+      var n=parseNum(c.value),a=rows[+c.dataset.i][1];
+      c.classList.remove('right','wrong');
+      if(isNaN(n)){blank++;return;}
+      if(Math.abs(n-a)<1e-9){c.classList.add('right');good++;}else c.classList.add('wrong');
+    });
+    $('.fb',root).textContent=blank?'Isi semua kolom dulu, lalu periksa lagi.':(good===rows.length?okMsg:good+' dari '+rows.length+' benar. Perbaiki kolom yang berwarna merah.');
+  });
+}
+
+/* ---------- simulasi per pertemuan ---------- */
+function w1(r){
+  r.innerHTML='<div class="wg"><p style="margin:0">Geser untuk mengubah jumlah kotak yang akan dibagikan.</p>'+
+  '<div class="ctrl"><label for="w1k">Kotak kurma<output id="w1ko"></output></label><input type="range" id="w1k" min="1" max="12" value="8"></div>'+
+  '<div class="ctrl"><label for="w1a">Kotak air mineral<output id="w1ao"></output></label><input type="range" id="w1a" min="1" max="12" value="4"></div>'+
+  '<div class="stage" id="w1s"></div><div class="readout" id="w1r" aria-live="polite"></div></div>';
+  var k=$('#w1k',r),a=$('#w1a',r);
+  function u(){
+    var kv=+k.value,av=+a.value;
+    $('#w1ko',r).textContent=kv;$('#w1ao',r).textContent=av;
+    $('#w1s',r).innerHTML='<div class="r"><span class="lb">Kurma</span>'+blocks(kv,'k')+'</div><div class="r"><span class="lb">Air</span>'+blocks(av,'a')+'</div>';
+    $('#w1r',r).innerHTML='Kurma : Air = <b>'+kv+' : '+av+'</b><br>Air : Seluruh kotak = <b>'+av+' : '+(kv+av)+'</b> (seluruhnya '+(kv+av)+' kotak)<br>Kurma : Seluruh kotak = <b>'+kv+' : '+(kv+av)+'</b>';
+  }
+  k.addEventListener('input',u);a.addEventListener('input',u);u();
+}
+function w2(r){
+  r.innerHTML='<div class="wg"><p style="margin:0">Pilih rasio awal, lalu geser pengali untuk melihat rasio yang ekuivalen.</p>'+
+  '<div class="ctrl"><label for="w2a">Kurma<output id="w2ao"></output></label><input type="range" id="w2a" min="1" max="9" value="2"></div>'+
+  '<div class="ctrl"><label for="w2b">Air<output id="w2bo"></output></label><input type="range" id="w2b" min="1" max="9" value="4"></div>'+
+  '<div class="ctrl"><label for="w2k">Pengali<output id="w2ko"></output></label><input type="range" id="w2k" min="1" max="6" value="3"></div>'+
+  '<div class="stage" id="w2s"></div><div class="readout" id="w2r" aria-live="polite"></div><div class="chips" id="w2c"></div></div>'+
+  '<h3 style="margin-top:22px">Cocokkan rasio yang ekuivalen</h3><p>Pilih pasangan yang tepat untuk setiap rasio.</p><div id="w2m"></div>';
+  var A=$('#w2a',r),B=$('#w2b',r),K=$('#w2k',r);
+  function u(){
+    var a=+A.value,b=+B.value,k=+K.value,g=gcd(a,b);
+    $('#w2ao',r).textContent=a;$('#w2bo',r).textContent=b;$('#w2ko',r).textContent=k;
+    $('#w2s',r).innerHTML='<div class="r"><span class="lb">Kurma</span>'+blocks(a*k,'k',1)+'</div><div class="r"><span class="lb">Air</span>'+blocks(b*k,'a',1)+'</div>';
+    $('#w2r',r).innerHTML=a+' : '+b+' = <b>'+(a*k)+' : '+(b*k)+'</b> (dikali '+k+')<br>Bentuk paling sederhana: <b>'+(a/g)+' : '+(b/g)+'</b>'+(g>1?' (dibagi '+g+')':' (sudah sederhana)');
+    var c='';for(var i=1;i<=6;i++)c+='<span'+(i===k?' class="on"':'')+'>'+(a*i)+' : '+(b*i)+'</span>';
+    $('#w2c',r).innerHTML=c;
+  }
+  [A,B,K].forEach(function(x){x.addEventListener('input',u);});u();
+  var pairs=[['2 : 3','6 : 9'],['4 : 5','8 : 10'],['1 : 4','2 : 8'],['3 : 2','9 : 6']];
+  var opts=['9 : 6','2 : 8','6 : 9','8 : 10'];
+  var m=$('#w2m',r);
+  m.innerHTML='<div class="tw"><table><tbody>'+pairs.map(function(p,i){
+    return '<tr><td><b>'+p[0]+'</b> =</td><td><select data-i="'+i+'" aria-label="Pasangan rasio '+p[0]+'"><option value="">Pilih…</option>'+opts.map(function(o){return '<option>'+o+'</option>';}).join('')+'</select></td></tr>';}).join('')+
+    '</tbody></table></div><button class="btn" type="button">Periksa pasangan</button><p class="fb" role="status"></p>';
+  $('button',m).addEventListener('click',function(){
+    var good=0,blank=0;
+    m.querySelectorAll('select').forEach(function(s){
+      s.classList.remove('right','wrong');
+      if(!s.value){blank++;return;}
+      if(s.value===pairs[+s.dataset.i][1]){s.classList.add('right');good++;}else s.classList.add('wrong');
+    });
+    $('.fb',m).textContent=blank?'Pilih semua pasangan dulu.':(good===4?'Semua pasangan benar. Setiap pasangan dibentuk dengan mengalikan kedua suku dengan bilangan yang sama.':good+' dari 4 benar. Cek kembali: kedua suku harus dikali atau dibagi bilangan yang sama.');
+  });
+}
+function w3(r){
+  r.innerHTML='<div class="grid2"><div class="box"><h4>Kalkulator harga satuan</h4>'+
+  '<div class="fld"><label for="w3t">Harga total (Rp)</label><input type="number" id="w3t" value="100000" min="0"></div>'+
+  '<div class="fld"><label for="w3n">Jumlah kotak</label><input type="number" id="w3n" value="5" min="1"></div>'+
+  '<div class="fld"><label for="w3m">Ingin membeli (kotak)</label><input type="number" id="w3m" value="12" min="0"></div>'+
+  '<div class="readout" id="w3o" aria-live="polite"></div></div>'+
+  '<div class="box"><h4>Mana yang lebih hemat?</h4>'+
+  '<div class="fld"><label for="w3a1">Penawaran A: jumlah kue</label><input type="number" id="w3a1" value="6" min="1"></div>'+
+  '<div class="fld"><label for="w3a2">Penawaran A: harga (Rp)</label><input type="number" id="w3a2" value="21000" min="0"></div>'+
+  '<div class="fld"><label for="w3b1">Penawaran B: jumlah kue</label><input type="number" id="w3b1" value="4" min="1"></div>'+
+  '<div class="fld"><label for="w3b2">Penawaran B: harga (Rp)</label><input type="number" id="w3b2" value="15000" min="0"></div>'+
+  '<div class="readout" id="w3c" aria-live="polite"></div></div></div>';
+  function g(id){return parseFloat($('#'+id,r).value);}
+  function u(){
+    var t=g('w3t'),n=g('w3n'),m=g('w3m'),o=$('#w3o',r);
+    if(!(n>0)||isNaN(t)){o.textContent='Isi harga dan jumlah dengan benar.';}
+    else{var s=t/n;o.innerHTML=rp(t)+' ÷ '+n+' = <b>'+rp(s)+'</b> per kotak'+(isNaN(m)?'':'<br>Biaya '+m+' kotak = '+m+' × '+rp(s)+' = <b>'+rp(s*m)+'</b>');}
+    var a=g('w3a2')/g('w3a1'),b=g('w3b2')/g('w3b1'),c=$('#w3c',r);
+    if(!isFinite(a)||!isFinite(b)){c.textContent='Isi semua kolom dengan benar.';return;}
+    c.innerHTML='A: '+rp(a)+' per kue<br>B: '+rp(b)+' per kue<br><b>'+(Math.abs(a-b)<1e-9?'Harga satuannya sama.':(a<b?'A lebih hemat '+rp(b-a)+' per kue.':'B lebih hemat '+rp(a-b)+' per kue.'))+'</b>';
+  }
+  r.querySelectorAll('input').forEach(function(i){i.addEventListener('input',u);});u();
+}
+function w4(r){
+  r.innerHTML='<div class="wg"><p style="margin:0">Setiap paket takjil membutuhkan kurma dengan jumlah yang sama. Ubah jumlah paketnya.</p>'+
+  '<div class="ctrl"><label for="w4p">Jumlah paket takjil<output id="w4po"></output></label><input type="range" id="w4p" min="1" max="30" value="10"></div>'+
+  '<div class="stage" id="w4s"></div><div class="readout" id="w4r" aria-live="polite"></div></div>'+
+  '<h3 style="margin-top:22px">Isi tabel perbandingan</h3><p>Setiap paket membutuhkan 2 kurma. Lengkapi tabelnya.</p><div id="w4t"></div>';
+  var P=$('#w4p',r);
+  function u(){var p=+P.value;$('#w4po',r).textContent=p;
+    $('#w4s',r).innerHTML='<div class="r"><span class="lb">Kurma</span>'+blocks(p*2,'k',1)+'</div>';
+    $('#w4r',r).innerHTML='Paket : Kurma = <b>'+p+' : '+(p*2)+'</b> = 1 : 2<br>'+fr(p*2,p)+' = '+fr('x','30')+' menghasilkan x = '+(p*2*30/p)+' (untuk 30 paket)';}
+  P.addEventListener('input',u);u();
+  fillTable($('#w4t',r),['Jumlah paket','Kurma yang dibutuhkan'],[[1,2],[5,10],[10,20],[15,30],[20,40],[30,60]],'Semua benar. Pada perbandingan senilai, jumlah kurma selalu 2 kali jumlah paket.');
+}
+function w5(r){
+  r.innerHTML='<div class="wg"><p style="margin:0">Satu pekerjaan membutuhkan total 48 hari kerja satu orang. Semua pekerja memiliki kemampuan yang sama.</p>'+
+  '<div class="ctrl"><label for="w5p">Jumlah pekerja<output id="w5po"></output></label><input type="range" id="w5p" min="1" max="12" value="4"></div>'+
+  '<div class="stage" id="w5s"></div><div class="readout" id="w5r" aria-live="polite"></div></div>'+
+  '<h3 style="margin-top:22px">Isi tabel perbandingan</h3><p>Hasil kali pekerja dan hari selalu 48. Lengkapi tabelnya.</p><div id="w5t"></div>';
+  var P=$('#w5p',r);
+  function u(){var p=+P.value,d=48/p;$('#w5po',r).textContent=p;
+    $('#w5s',r).innerHTML='<div class="r"><span class="lb">Pekerja</span>'+blocks(p,'a',1)+'</div><div class="r"><span class="lb">Waktu</span><div class="bar" style="width:'+(d/48*100)+'%"></div></div>';
+    $('#w5r',r).innerHTML=p+' pekerja × '+fmt(d)+' hari = <b>'+fmt(p*d)+'</b><br>Pekerja bertambah, waktu berkurang. Hasil kalinya tetap.';}
+  P.addEventListener('input',u);u();
+  fillTable($('#w5t',r),['Jumlah pekerja','Waktu (hari)'],[[2,24],[3,16],[6,8],[8,6],[12,4]],'Semua benar. Hasil kali pekerja dan hari selalu 48.');
+}
+function w6(r){
+  r.innerHTML='<div class="note"><b>Misi Berbagi: Rencanakan Paket Takjil!</b>Panitia masjid menyiapkan paket takjil. Satu paket berisi 6 kurma dan 3 kue. 5 paket membutuhkan 30 kurma. Untuk 80 penerima disiapkan 40 paket. Jawab kelima pertanyaan misi di bawah ini.</div>'+
+  '<div style="margin-top:14px" id="w6q"></div>';
+  quiz($('#w6q',r),[
+    ra('<b>Misi 1 · Rasio isi paket.</b> Tentukan rasio kurma : kue dalam satu paket, dalam bentuk paling sederhana.',[2,1],'6 : 3 dibagi 3 menjadi <b>2 : 1</b>. Setiap paket berisi kurma dua kali lebih banyak daripada kue.',true),
+    nu('<b>Misi 2 · Bahan.</b> 5 paket membutuhkan 30 kurma. Berapa kurma yang dibutuhkan untuk 40 paket?',240,'Senilai: '+fr(30,5)+' = '+fr('x',40)+', jadi 6 kurma per paket, 6 × 40 = <b>240 kurma</b>.','kurma'),
+    nu('<b>Misi 3 · Biaya.</b> Harga satu kurma Rp2.000 dan satu kue Rp1.500. Berapa biaya satu paket (dalam rupiah)?',16500,'6 × 2.000 = 12.000 dan 3 × 1.500 = 4.500. Jumlahnya <b>Rp16.500</b> per paket.','Rp'),
+    nu('<b>Misi 4 · Penerima berbeda.</b> 40 paket untuk 80 penerima. Jika penerimanya 120 orang dengan perbandingan yang sama, berapa kurma yang dibutuhkan?',360,'Paket : penerima = 40 : 80 = 1 : 2, jadi 120 penerima membutuhkan 60 paket. Kurmanya 60 × 6 = <b>360</b>.','kurma'),
+    nu('<b>Misi 5 · Pembagian tugas.</b> 6 relawan mengemas 40 paket selama 4 jam. Jika ada 8 relawan dengan kemampuan sama, berapa jam waktu yang dibutuhkan?',3,'Berbalik nilai: 6 × 4 = 8 × x, jadi x = 24 ÷ 8 = <b>3 jam</b>.','jam')
+  ],'misi');
+}
+
+/* ---------- bank soal ---------- */
+var LAT={
+ 1:[mc('Di sebuah kelas ada 12 siswa laki-laki dan 18 siswa perempuan. Perbandingan siswa laki-laki dengan siswa perempuan adalah…',['12 : 18','18 : 12','12 : 30','30 : 12'],0,'Urutan rasio mengikuti urutan kalimat: laki-laki dulu, perempuan kedua, sehingga 12 : 18.'),
+    ra('Di rak ada 5 buku tulis dan 3 buku gambar. Tuliskan perbandingan buku gambar dengan seluruh buku.',[3,8],'Seluruh buku ada 5 + 3 = 8, sehingga buku gambar : seluruh buku = <b>3 : 8</b>.'),
+    mc('Pernyataan "Perbandingan 6 : 9 sama dengan 9 : 6" adalah…',['Benar','Salah'],1,'Urutan pada rasio penting. 6 : 9 dan 9 : 6 membandingkan hal yang berbeda urutannya.')],
+ 2:[nu('2 : 4 = 1 : …',2,'Kedua suku dibagi 2, sehingga 2 : 4 = 1 : <b>2</b>.'),
+    mc('Manakah yang ekuivalen dengan 3 : 5?',['6 : 10','5 : 3','9 : 12','3 : 8'],0,'3 : 5 dikali 2 menjadi 6 : 10. Pilihan lain tidak diperoleh dengan mengalikan kedua suku dengan bilangan yang sama.'),
+    nu('4 paket makanan untuk 8 penerima. Jika paketnya menjadi 6 dengan rasio yang sama, berapa penerimanya?',12,'4 : 8 = 1 : 2, jadi 6 paket untuk 6 × 2 = <b>12 penerima</b>.')],
+ 3:[nu('4 buku tulis harganya Rp60.000. Berapa harga satu buku (rupiah)?',15000,'60.000 ÷ 4 = <b>15.000</b>.','Rp'),
+    nu('3 kg apel harganya Rp90.000. Berapa harga 5 kg apel (rupiah)?',150000,'Harga 1 kg = 90.000 ÷ 3 = 30.000. Harga 5 kg = 5 × 30.000 = <b>150.000</b>.','Rp'),
+    mc('Rasio satuan menyatakan nilai untuk…',['satu satuan','seluruh barang','dua satuan','sepuluh satuan'],0,'Rasio satuan adalah nilai untuk <b>satu</b> satuan, misalnya harga per satu buah.')],
+ 4:[mc('Pada perbandingan senilai, jika satu besaran bertambah maka besaran lainnya…',['ikut bertambah dengan perbandingan sama','berkurang','tetap','menghilang'],0,'Senilai berarti naik-naik atau turun-turun dengan perbandingan yang sama.'),
+    nu('10 paket membutuhkan 20 kurma. Berapa kurma untuk 15 paket?',30,'Tiap paket 2 kurma, jadi 15 × 2 = <b>30</b>.'),
+    mc('Manakah yang merupakan perbandingan senilai?',['Banyak buku dan harganya (harga tiap buku sama)','Banyak pekerja dan waktu pengerjaan','Kecepatan dan waktu tempuh pada jarak tetap','Banyak keran dan waktu mengisi bak'],0,'Semakin banyak buku, semakin besar harga totalnya dengan perbandingan sama. Tiga pilihan lain berbalik nilai.')],
+ 5:[mc('Pada perbandingan berbalik nilai, hasil kali dua besaran…',['selalu tetap','selalu bertambah','selalu berkurang','selalu nol'],0,'Hasil kali dua besaran bernilai tetap, misalnya pekerja × hari = konstan.'),
+    nu('4 orang menyelesaikan pekerjaan dalam 12 hari. Jika 6 orang, berapa hari?',8,'4 × 12 = 6 × x, jadi x = 48 ÷ 6 = <b>8 hari</b>.','hari'),
+    nu('3 orang membersihkan halaman masjid dalam 10 hari. Jika 5 orang, berapa hari?',6,'3 × 10 = 5 × x, jadi x = 30 ÷ 5 = <b>6 hari</b>.','hari')],
+ 6:[mc('"5 paket membutuhkan 10 butir telur. Berapa telur untuk 20 paket?" Jenis perbandingannya adalah…',['Rasio satuan','Perbandingan senilai','Perbandingan berbalik nilai','Rasio ekuivalen saja'],1,'Semakin banyak paket, semakin banyak telur dengan perbandingan sama. Ini perbandingan senilai.'),
+    nu('10 paket takjil harganya Rp150.000. Berapa biaya satu paket (rupiah)?',15000,'150.000 ÷ 10 = <b>15.000</b>.','Rp'),
+    nu('5 relawan menyelesaikan tugas dalam 6 jam. Jika 10 relawan, berapa jam?',3,'5 × 6 = 10 × x, jadi x = 30 ÷ 10 = <b>3 jam</b>.','jam')]
+};
+var KUIS={
+ 1:[mc('Perbandingan dua kuantitas dituliskan dengan tanda…',['titik dua ( : )','tambah ( + )','sama dengan ( = )','kali ( × )'],0,'Rasio a dan b ditulis <b>a : b</b> dan dibaca "a banding b".'),
+    ra('Ada 8 kotak kurma dan 4 kotak air mineral. Tuliskan perbandingan kotak kurma dengan air mineral.',[8,4],'Kurma : air = <b>8 : 4</b> (bentuk 2 : 1 juga benar).'),
+    ra('Dari 8 kotak kurma dan 4 kotak air mineral, tuliskan perbandingan air mineral dengan seluruh kotak.',[1,3],'Seluruh kotak = 8 + 4 = 12. Air : seluruh = <b>4 : 12</b>, yang sama dengan 1 : 3.'),
+    mc('Satu paket berisi 3 kurma dan 2 permen. Perbandingan permen dengan kurma adalah…',['2 : 3','3 : 2','2 : 5','5 : 2'],0,'Permen disebut dulu, jadi <b>2 : 3</b>.'),
+    mc('Di masjid ada 20 jamaah laki-laki dan 15 jamaah perempuan. Perbandingan jamaah perempuan dengan seluruh jamaah adalah…',['15 : 20','15 : 35','20 : 35','35 : 15'],1,'Seluruh jamaah = 20 + 15 = 35. Perempuan : seluruh = <b>15 : 35</b>.')],
+ 2:[mc('Bentuk paling sederhana dari 12 : 18 adalah…',['2 : 3','3 : 2','4 : 6','6 : 9'],0,'FPB 12 dan 18 adalah 6. Dibagi 6 menjadi <b>2 : 3</b>.'),
+    nu('5 : 7 = 15 : x. Berapa nilai x?',21,'5 dikali 3 menjadi 15, jadi 7 × 3 = <b>21</b>.'),
+    mc('Rasio yang ekuivalen dengan 4 : 6 adalah…',['2 : 3','3 : 2','6 : 4','8 : 10'],0,'4 : 6 dibagi 2 menjadi <b>2 : 3</b>.'),
+    nu('Rasio 18 : 24 disederhanakan menjadi a : b. Berapa a + b?',7,'FPB 18 dan 24 adalah 6, sehingga 18 : 24 = 3 : 4. Maka a + b = <b>7</b>.'),
+    nu('6 paket untuk 9 penerima. Jika paketnya 10 dengan rasio yang sama, berapa penerimanya?',15,'6 : 9 = 10 : x, jadi x = 9 × 10 ÷ 6 = <b>15</b>.')],
+ 3:[nu('5 kotak kurma harganya Rp100.000. Berapa harga satu kotak (rupiah)?',20000,'100.000 ÷ 5 = <b>20.000</b>.','Rp'),
+    nu('Sepeda motor menempuh 120 km dalam 3 jam. Berapa kecepatannya (km per jam)?',40,'120 ÷ 3 = <b>40 km/jam</b>.','km/jam'),
+    mc('Penawaran A: 6 kue Rp21.000. Penawaran B: 4 kue Rp15.000. Manakah yang lebih hemat per kue?',['A','B','Sama saja','Tidak dapat ditentukan'],0,'A: 21.000 ÷ 6 = 3.500 per kue. B: 15.000 ÷ 4 = 3.750 per kue. <b>A lebih hemat</b>.'),
+    nu('1 kotak air mineral isi 24 botol harganya Rp36.000. Berapa harga satu botol (rupiah)?',1500,'36.000 ÷ 24 = <b>1.500</b>.','Rp'),
+    nu('Harga satu kotak kurma Rp20.000. Berapa biaya 12 kotak (rupiah)?',240000,'12 × 20.000 = <b>240.000</b>.','Rp')],
+ 4:[nu('10 paket takjil butuh 20 kurma. Berapa kurma untuk 30 paket?',60,fr(20,10)+' = '+fr('x',30)+', jadi x = <b>60</b>.'),
+    nu('3 kg beras harganya Rp45.000. Berapa harga 7 kg (rupiah)?',105000,'Harga 1 kg = 15.000. Harga 7 kg = 7 × 15.000 = <b>105.000</b>.','Rp'),
+    nu('Sebuah mobil menghabiskan 6 liter bensin untuk 72 km. Berapa liter untuk 120 km?',10,'72 ÷ 6 = 12 km per liter. 120 ÷ 12 = <b>10 liter</b>.','liter'),
+    mc('Tabel: x = 2, 4, 6 dan y = 5, 10, 15. Hubungan x dan y adalah…',['Senilai','Berbalik nilai','Bukan keduanya','Tidak dapat ditentukan'],0,'y ÷ x selalu 2,5 (hasil bagi tetap), jadi <b>senilai</b>.'),
+    nu('Resep 4 porsi membutuhkan 300 gram tepung. Berapa gram untuk 10 porsi?',750,'Tiap porsi 75 gram, jadi 10 × 75 = <b>750</b>.','gram')],
+ 5:[nu('4 pekerja menyelesaikan pekerjaan dalam 12 hari. Jika 8 pekerja, berapa hari?',6,'4 × 12 = 8 × x, jadi x = <b>6 hari</b>.','hari'),
+    nu('Mobil berkecepatan 60 km/jam menempuh jarak dalam 4 jam. Jika kecepatannya 80 km/jam, berapa jam?',3,'60 × 4 = 80 × x, jadi x = 240 ÷ 80 = <b>3 jam</b>.','jam'),
+    mc('Manakah yang merupakan perbandingan berbalik nilai?',['Banyak pekerja dan waktu pengerjaan','Banyak buku dan harga','Banyak porsi dan bahan','Jarak dan bensin yang dipakai'],0,'Pekerja bertambah, waktu berkurang. Pilihan lainnya senilai.'),
+    nu('Persediaan makanan cukup untuk 20 orang selama 15 hari. Jika ada 30 orang, berapa hari cukupnya?',10,'20 × 15 = 30 × x, jadi x = 300 ÷ 30 = <b>10 hari</b>.','hari'),
+    nu('6 orang membersihkan masjid selama 5 jam. Agar selesai dalam 2 jam saja (kemampuan sama), berapa orang yang dibutuhkan?',15,'6 × 5 = x × 2, jadi x = 30 ÷ 2 = <b>15 orang</b>.','orang')],
+ 6:[ra('Satu paket berisi 12 kurma dan 8 permen. Tuliskan rasio kurma : permen paling sederhana.',[3,2],'FPB 12 dan 8 adalah 4. 12 : 8 = <b>3 : 2</b>.',true),
+    nu('8 : 14 = 12 : x. Berapa nilai x?',21,'8 dikali 1,5 menjadi 12, jadi x = 14 × 1,5 = <b>21</b>.'),
+    nu('6 botol air mineral harganya Rp18.000. Berapa harga 10 botol (rupiah)?',30000,'Harga 1 botol 3.000, jadi 10 botol = <b>30.000</b>.','Rp'),
+    nu('5 paket membutuhkan 15 butir kurma. Berapa butir untuk 12 paket?',36,'Tiap paket 3 butir, jadi 12 × 3 = <b>36</b>.','butir'),
+    nu('6 orang menyelesaikan pekerjaan dalam 8 hari. Jika 4 orang, berapa hari?',12,'6 × 8 = 4 × x, jadi x = 48 ÷ 4 = <b>12 hari</b>.','hari'),
+    mc('Manakah pernyataan perbandingan senilai?',['Makin banyak paket takjil, makin banyak kurma yang dibutuhkan','Makin banyak relawan, makin lama pekerjaan selesai','Makin tinggi kecepatan, makin lama waktu tempuh','Makin banyak pekerja, makin sedikit hari kerja'],0,'Naik-naik dengan perbandingan tetap adalah senilai. Pilihan 2 dan 3 pernyataannya keliru, dan pilihan 4 adalah berbalik nilai.'),
+    nu('40 paket dibagi untuk anak yatim dan kaum dhuafa dengan perbandingan 3 : 5. Berapa paket untuk anak yatim?',15,'Jumlah bagian 3 + 5 = 8. Anak yatim = 3/8 × 40 = <b>15 paket</b>.','paket'),
+    nu('Satu kotak berisi 12 botol air mineral harganya Rp30.000. Berapa harga satu botol (rupiah)?',2500,'30.000 ÷ 12 = <b>2.500</b>.','Rp'),
+    mc('Pernyataan "Jika jumlah pekerja bertambah dengan kemampuan sama, waktu pengerjaan bertambah" adalah…',['Benar','Salah'],1,'Pada perbandingan berbalik nilai, pekerja bertambah berarti waktu <b>berkurang</b>.'),
+    nu('8 relawan mengemas paket dalam 9 hari. Agar selesai lebih cepat dengan 12 relawan, berapa hari?',6,'8 × 9 = 12 × x, jadi x = 72 ÷ 12 = <b>6 hari</b>.','hari')]
+};
+
+/* ---------- data pertemuan ---------- */
+var M=[
+{n:1,t:'Mengenal Konsep Perbandingan (Rasio)',s:'Konsep rasio',w:w1,nilai:'Tolong-menolong',
+ tuj:'Siswa mampu menjelaskan konsep perbandingan, menuliskan rasio dua kuantitas, dan menentukan perbandingan berdasarkan informasi yang diberikan.',
+ ap:'Panitia masjid menyiapkan <b>8 kotak kurma</b> dan <b>4 kotak air mineral</b> untuk dibagikan kepada warga. Mana yang lebih banyak, dan berapa kali lipatnya? Pertanyaan seperti ini dijawab dengan perbandingan.',
+ mat:'<p><b>Perbandingan (rasio)</b> adalah cara membandingkan dua kuantitas yang sejenis. Rasio a dan b ditulis <b>a : b</b> dan dibaca "a banding b".</p><ul><li>Urutan penting. 8 : 4 berbeda dengan 4 : 8.</li><li>Kuantitas harus sejenis dan memakai satuan yang sama.</li><li>Rasio bisa membandingkan <b>bagian dengan bagian</b> (kurma : air) atau <b>bagian dengan keseluruhan</b> (air : seluruh kotak).</li></ul><p>Langkah menuliskan rasio: (1) tentukan dua kuantitas dan urutannya, (2) pastikan satuannya sama, (3) tulis dalam bentuk a : b.</p>',
+ cth:'<p>Terdapat 8 kotak kurma dan 4 kotak air mineral.</p><ol><li>Kurma : air mineral = <b>8 : 4</b></li><li>Seluruh kotak = 8 + 4 = 12, maka air mineral : seluruh kotak = <b>4 : 12</b></li></ol><p>Catatan: 8 : 4 dapat disederhanakan menjadi 2 : 1. Hal ini dibahas di Pertemuan 2.</p>',
+ ref:{dalil:'Dan tolong-menolonglah kamu dalam (mengerjakan) kebajikan dan takwa.',src:'QS. Al-Ma\'idah: 2 (terjemah makna)',kait:'Panitia membandingkan jumlah bantuan dengan jumlah penerima supaya bantuan terbagi tepat. Rasio menjadi alat untuk menolong dengan terencana.',tanya:'Sebutkan satu bentuk tolong-menolong di sekitarmu. Dapatkah kamu menuliskannya sebagai perbandingan dua jumlah?'}},
+{n:2,t:'Rasio Ekuivalen dan Penyederhanaan',s:'Rasio ekuivalen',w:w2,nilai:'Keadilan',
+ tuj:'Siswa mampu menentukan rasio ekuivalen dan menyederhanakan perbandingan menggunakan faktor yang sama.',
+ ap:'Panitia punya <b>4 paket makanan untuk 8 penerima</b>. Tiba-tiba paketnya bertambah menjadi 6. Berapa penerima yang tetap mendapat bagian sama? Rasio yang ekuivalen membantu menjaga pembagian tetap adil.',
+ mat:'<p><b>Rasio ekuivalen</b> adalah rasio dengan bentuk berbeda tetapi nilai perbandingannya sama.</p><ul><li>Kalikan atau bagi <b>kedua suku</b> dengan bilangan yang sama (bukan nol).</li><li>Contoh: 2 : 4 = 1 : 2 = 3 : 6 = 4 : 8.</li><li><b>Menyederhanakan</b> rasio berarti membagi kedua suku dengan FPB-nya sampai tidak bisa dibagi lagi. Contoh: 12 : 18 dibagi 6 menjadi 2 : 3.</li></ul>',
+ cth:'<p>4 paket untuk 8 penerima. Jika paketnya menjadi 6, berapa penerimanya?</p><p>4 : 8 = 1 : 2. Artinya tiap paket untuk 2 penerima. Jadi 6 paket untuk 6 × 2 = <b>12 penerima</b>.</p><p>Cara lain: 4 : 8 = 6 : x. Karena 4 dikali 1,5 menjadi 6, maka x = 8 × 1,5 = 12.</p>',
+ ref:{dalil:'Sempurnakanlah takaran dan timbangan dengan adil.',src:'QS. Al-An\'am: 152 (terjemah makna); lihat juga QS. Ar-Rahman: 7–9',kait:'Rasio ekuivalen memastikan bahwa ketika jumlah paket berubah, setiap penerima tetap memperoleh bagian yang sama. Itulah wujud keadilan dalam pembagian.',tanya:'Kapan kamu pernah merasakan atau melihat pembagian yang adil? Apa yang membuatnya adil?'}},
+{n:3,t:'Rasio Satuan (Unit Rate)',s:'Rasio satuan',w:w3,nilai:'Kejujuran',
+ tuj:'Siswa mampu menentukan nilai satuan dari suatu perbandingan dan menggunakannya untuk menyelesaikan permasalahan sehari-hari.',
+ ap:'Toko A menjual 6 kue Rp21.000, toko B menjual 4 kue Rp15.000. Mana yang lebih murah? Kita tidak bisa menebak. Kita perlu harga untuk <b>satu</b> kue.',
+ mat:'<p><b>Rasio satuan</b> menyatakan nilai untuk <b>satu satuan</b>.</p><ul><li>Harga satuan = harga total ÷ banyak barang.</li><li>Kecepatan = jarak ÷ waktu (km per jam).</li><li>Setelah nilai satuan diketahui, kalikan dengan jumlah yang diinginkan untuk mendapat totalnya.</li><li>Nilai satuan memudahkan membandingkan dua penawaran.</li></ul>',
+ cth:'<p>5 kotak kurma harganya Rp100.000. Berapa harga satu kotak?</p><div class="math">100.000 ÷ 5 = 20.000</div><p>Jadi harga satu kotak kurma adalah <b>Rp20.000</b>. Untuk 12 kotak: 12 × 20.000 = <b>Rp240.000</b>.</p>',
+ ref:{dalil:'Penjual dan pembeli sama-sama memiliki hak memilih selama belum berpisah. Jika keduanya jujur dan menjelaskan keadaan barang, jual belinya diberkahi. Jika menyembunyikan dan berdusta, keberkahannya dihapus.',src:'HR. Bukhari dan Muslim (terjemah makna); lihat juga QS. Al-Muthaffifin: 1–3',kait:'Harga satuan membuat perhitungan terbuka dan mudah diperiksa. Penjual yang jujur menyebut harga sesuai hitungan, pembeli pun bisa menilai dengan tepat.',tanya:'Mengapa ketepatan menghitung termasuk bagian dari kejujuran saat berjual beli?'}},
+{n:4,t:'Perbandingan Senilai',s:'Perbandingan senilai',w:w4,nilai:'Dermawan dan tidak berlebih-lebihan',
+ tuj:'Siswa mampu mengidentifikasi hubungan perbandingan senilai dan menyelesaikan permasalahan menggunakan tabel atau perhitungan matematika.',
+ ap:'Untuk 10 paket takjil dibutuhkan 20 kurma. Jika panitia ingin membuat 30 paket, kurmanya cukup dihitung, tidak perlu ditebak. Dengan menghitung, bahan tidak kurang dan tidak terbuang.',
+ mat:'<p>Dua besaran berhubungan <b>senilai</b> jika satu besaran bertambah n kali, besaran lainnya ikut bertambah n kali.</p><ul><li>Ciri: naik-naik atau turun-turun, hasil bagi kedua besaran selalu tetap.</li><li>Cara menyelesaikan: (1) tabel perbandingan, (2) persamaan '+fr('a','b')+' = '+fr('c','d')+', atau (3) mencari nilai satuan lebih dulu.</li></ul>',
+ cth:'<p>10 paket takjil membutuhkan 20 kurma. Berapa kurma untuk 30 paket?</p><div class="math">'+fr(20,10)+' = '+fr('x',30)+'</div><div class="math">x = 60</div><p>Jadi diperlukan <b>60 kurma</b>. Cek dengan nilai satuan: tiap paket 2 kurma, 2 × 30 = 60.</p>',
+ ref:{dalil:'Makan dan minumlah, tetapi jangan berlebih-lebihan. Dan janganlah kamu menghambur-hamburkan hartamu secara boros.',src:'QS. Al-A\'raf: 31 dan QS. Al-Isra\': 26–27 (terjemah makna)',kait:'Menghitung kebutuhan bahan dengan perbandingan senilai menjaga agar kita dermawan tanpa mubazir. Bahan cukup untuk semua penerima dan tidak ada yang terbuang. Memberi makan orang yang berpuasa juga mendapat pahala (HR. At-Tirmidzi).',tanya:'Bagaimana perhitungan yang tepat bisa mencegah kita berlebih-lebihan saat berbagi?'}},
+{n:5,t:'Perbandingan Berbalik Nilai',s:'Perbandingan berbalik nilai',w:w5,nilai:'Kerja sama dan tanggung jawab',
+ tuj:'Siswa mampu mengidentifikasi hubungan perbandingan berbalik nilai dan menyelesaikan masalah menggunakan prinsip perkalian dua besaran yang konstan.',
+ ap:'Kerja bakti membersihkan masjid dikerjakan 4 orang selama 12 hari. Kalau pekerjanya jadi 6 orang, apakah waktunya lebih lama atau lebih singkat? Tentu lebih singkat. Seberapa singkat? Kita hitung.',
+ mat:'<p>Dua besaran berhubungan <b>berbalik nilai</b> jika satu besaran bertambah n kali, besaran lainnya berkurang menjadi 1/n kalinya.</p><ul><li>Ciri: naik-turun, <b>hasil kali</b> kedua besaran selalu tetap.</li><li>Rumus: a₁ × b₁ = a₂ × b₂.</li><li>Contoh: jumlah pekerja dan waktu, kecepatan dan waktu tempuh.</li><li>Asumsi penting: semua pekerja memiliki kemampuan kerja yang sama.</li></ul>',
+ cth:'<p>4 orang menyelesaikan pekerjaan dalam 12 hari. Jika 6 orang dengan kemampuan sama, berapa hari?</p><div class="math">4 × 12 = 6 × x</div><div class="math">x = 48 ÷ 6 = 8</div><p>Jadi pekerjaan selesai dalam <b>8 hari</b>.</p>',
+ ref:{dalil:'Orang mukmin bagi mukmin lainnya bagaikan satu bangunan yang saling menguatkan.',src:'HR. Bukhari dan Muslim (terjemah makna); lihat juga QS. Al-Ma\'idah: 2',kait:'Semakin banyak orang yang terlibat, pekerjaan semakin cepat selesai asalkan setiap orang menunaikan bagiannya. Perbandingan berbalik nilai menunjukkan nilai kerja sama dan tanggung jawab.',tanya:'Bagian apa yang bisa kamu ambil agar kerja kelompok terasa lebih ringan dan cepat?'}},
+{n:6,t:'Penerapan Perbandingan dalam Kehidupan Sehari-hari',s:'Penerapan',w:w6,nilai:'Sedekah, amanah, tanggung jawab',
+ tuj:'Siswa mampu menggunakan berbagai konsep perbandingan untuk menyelesaikan permasalahan kontekstual secara tepat.',
+ ap:'Kamu dipercaya menjadi koordinator pembagian takjil di lingkungan masjid. Ada bahan, biaya, penerima, dan relawan yang harus dihitung dengan tepat. Gunakan semua yang sudah kamu pelajari.',
+ mat:'<p>Pilih alat yang tepat sesuai pertanyaannya:</p><div class="tw"><table><thead><tr><th>Kalau soal menanyakan…</th><th>Gunakan</th></tr></thead><tbody><tr><td>Membandingkan dua jumlah</td><td>Rasio (a : b)</td></tr><tr><td>Menyamakan atau menyederhanakan perbandingan</td><td>Rasio ekuivalen</td></tr><tr><td>Nilai untuk satu satuan, harga satuan</td><td>Rasio satuan</td></tr><tr><td>Naik-naik atau turun-turun</td><td>Perbandingan senilai</td></tr><tr><td>Naik-turun, hasil kali tetap</td><td>Perbandingan berbalik nilai</td></tr></tbody></table></div>',
+ cth:'<p>Contoh pemilihan alat: "6 relawan mengemas 40 paket dalam 4 jam. Jika ada 8 relawan, berapa jam?" Relawan bertambah, waktu berkurang. Ini <b>berbalik nilai</b>: 6 × 4 = 8 × x, x = 3 jam.</p>',
+ ref:{dalil:'Sesungguhnya Allah menyuruh kamu menyampaikan amanat kepada yang berhak menerimanya. Setiap kamu adalah pemimpin dan akan dimintai pertanggungjawaban atas yang dipimpinnya.',src:'QS. An-Nisa\': 58 dan HR. Bukhari dan Muslim (terjemah makna)',kait:'Menghitung bahan dan biaya dengan benar, lalu melaporkannya dengan jujur, adalah amanah. Sedekah yang direncanakan dengan baik sampai tepat kepada penerimanya.',tanya:'Apa yang kamu lakukan agar amanah dalam mengelola bantuan untuk orang lain?'}}
+];
+var NILAI_RINGKAS=['Tolong-menolong','Keadilan','Kejujuran','Dermawan dan tidak berlebih-lebihan','Kerja sama dan tanggung jawab','Sedekah, amanah, tanggung jawab'];
+
+/* ---------- tampilan ---------- */
+var NAV=[['beranda','Beranda'],['petunjuk','Petunjuk'],['tujuan','Tujuan'],['peta','Peta Materi'],['pembelajaran','Pembelajaran'],['aktivitas','Aktivitas'],['evaluasi','Evaluasi'],['islam','Integrasi Islam'],['referensi','Referensi']];
+function doneCount(){var c=0;for(var i=1;i<=6;i++)if(S.done[i])c++;return c;}
+function scoreChip(key){var s=S.scores[key];return s?'<span class="chip ok">Skor terbaik '+s.s+'/'+s.t+'</span>':'';}
+
+function vBeranda(){
+  var c=doneCount();
+  return '<section class="hero"><div><p class="eyebrow" style="color:inherit;opacity:.85">Media pembelajaran digital · Kelas VII SMP</p><h1>RATIO LEARN</h1><p class="tag">Explore Ratios, Learn with Values</p>'+
+  '<p>Pelajari perbandingan (rasio) lewat penjelasan, simulasi, latihan, dan evaluasi interaktif, dengan nilai-nilai Islam yang hadir di setiap pertemuan.</p>'+
+  '<div class="row"><a class="btn" href="#pembelajaran">Mulai belajar</a><a class="btn ghost" href="#petunjuk">Petunjuk penggunaan</a></div></div>'+
+  '<div class="demo" aria-hidden="true"><div class="r"><span class="lb">Kurma</span>'+blocks(8,'k')+'</div><div class="r"><span class="lb">Air</span>'+blocks(4,'a')+'</div><div class="big">8 : 4 = 2 : 1</div></div></section>'+
+  '<div class="card" style="margin-bottom:22px"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Progres belajarmu</h3><span class="chip">'+c+' dari 6 pertemuan selesai</span></div><div class="prog" style="margin-top:10px" role="progressbar" aria-valuemin="0" aria-valuemax="6" aria-valuenow="'+c+'"><i style="width:'+(c/6*100)+'%"></i></div></div>'+
+  '<h2>Enam pertemuan</h2><div class="grid">'+M.map(function(m){return '<a class="card" href="#p'+m.n+'"><span class="eyebrow">Pertemuan '+m.n+(S.done[m.n]?' · selesai':'')+'</span><h3>'+m.s+'</h3><p>'+m.t+'</p><span class="chip gold">'+m.nilai+'</span></a>';}).join('')+'</div>'+
+  '<h2 style="margin-top:30px">Yang kamu dapatkan</h2><div class="grid">'+
+  [['Materi bertahap','Dari konsep dasar sampai penerapan, dengan contoh dan pembahasan.'],['Simulasi','Ubah angka dan lihat langsung hasilnya.'],['Latihan dengan umpan balik','Jawaban diperiksa otomatis lengkap dengan penjelasan.'],['Evaluasi','Kuis tiap pertemuan dan evaluasi gabungan.'],['Misi Berbagi','Proyek mini perencanaan paket takjil.'],['Refleksi Islami','Nilai, rujukan, dan jurnal refleksi pribadi.']].map(function(f){return '<div class="card"><h3>'+f[0]+'</h3><p style="margin:0">'+f[1]+'</p></div>';}).join('')+'</div>';
+}
+function vPetunjuk(){
+  return '<div class="pagehead"><p class="eyebrow">Halaman 2</p><h1>Petunjuk Penggunaan</h1><p class="lead">Ikuti langkah berikut supaya belajarmu lancar.</p></div>'+
+  '<div class="grid2"><div class="card"><h3>Mengakses materi</h3><ol><li>Buka menu <b>Pembelajaran</b>.</li><li>Pilih salah satu dari enam pertemuan.</li><li>Belajar berurutan dari Pertemuan 1 sampai 6.</li></ol></div>'+
+  '<div class="card"><h3>Alur setiap pertemuan</h3><ol><li>Tujuan pembelajaran</li><li>Apersepsi</li><li>Materi inti</li><li>Contoh soal dan pembahasan</li><li>Aktivitas interaktif</li><li>Latihan soal</li><li>Refleksi nilai Islam</li></ol></div>'+
+  '<div class="card"><h3>Menggunakan simulasi</h3><p>Geser penggeser atau isi kolom angka. Hasilnya berubah langsung. Coba beberapa angka, lalu tulis temuanmu.</p></div>'+
+  '<div class="card"><h3>Mengerjakan soal</h3><p>Pilih atau tulis jawaban, lalu tekan <b>Periksa</b>. Kamu akan melihat benar atau salahnya beserta pembahasan. Untuk jawaban rasio, tulis seperti <b>3:5</b>. Untuk angka, tulis angkanya saja, misalnya <b>20000</b>.</p></div>'+
+  '<div class="card"><h3>Evaluasi</h3><p>Kuis tersedia di menu <b>Evaluasi</b>: 5 soal untuk Pertemuan 1 sampai 5 dan 10 soal untuk evaluasi gabungan. Skor terbaikmu tersimpan di perangkat ini.</p></div>'+
+  '<div class="card"><h3>Menandai selesai</h3><p>Setelah menyelesaikan satu pertemuan, tekan <b>Tandai selesai</b> di bagian bawah halaman agar progresmu tercatat.</p></div></div>';
+}
+function vTujuan(){
+  return '<div class="pagehead"><p class="eyebrow">Halaman 3</p><h1>Tujuan Pembelajaran</h1></div>'+
+  '<div class="card" style="margin-bottom:16px"><h3>Capaian</h3><p style="color:var(--ink)">Siswa menggunakan rasio dan perbandingan untuk menyelesaikan masalah sehari-hari, sesuai capaian pembelajaran Matematika fase D elemen Bilangan, sambil menumbuhkan nilai-nilai Islam seperti kejujuran, tolong-menolong, keadilan, dan tidak berlebih-lebihan. Rumusan capaian dapat disesuaikan guru dengan dokumen kurikulum yang berlaku.</p></div>'+
+  '<h2>Tujuan setiap pertemuan</h2><div class="grid">'+M.map(function(m){return '<div class="card"><span class="eyebrow">Pertemuan '+m.n+'</span><h3>'+m.s+'</h3><p style="color:var(--ink)">'+m.tuj+'</p></div>';}).join('')+'</div>'+
+  '<h2 style="margin-top:28px">Tujuan pengembangan media</h2><ol><li>Membantu siswa memahami konsep perbandingan secara bertahap.</li><li>Memfasilitasi pembelajaran matematika melalui media digital yang interaktif.</li><li>Meningkatkan keterlibatan siswa dalam menyelesaikan permasalahan matematika.</li><li>Menghubungkan konsep perbandingan dengan situasi kehidupan sehari-hari.</li><li>Mengintegrasikan nilai-nilai Islam seperti kejujuran, tolong-menolong, keadilan, dan tidak berlebih-lebihan dalam aktivitas pembelajaran.</li></ol>';
+}
+function vPeta(){
+  var bridge=['Titik awal: mengenal rasio.','Melanjutkan Pertemuan 1: rasio dibuat ekuivalen dan disederhanakan.','Memakai rasio ekuivalen untuk mencari nilai per satu satuan.','Memakai nilai satuan untuk hubungan naik-naik.','Kebalikannya: hubungan naik-turun dengan hasil kali tetap.','Menggabungkan semua konsep dalam satu misi.'];
+  return '<div class="pagehead"><p class="eyebrow">Halaman 4</p><h1>Peta Materi</h1><p class="lead">Enam pertemuan saling terhubung. Setiap pertemuan memakai konsep sebelumnya.</p></div>'+
+  '<ol class="flow">'+M.map(function(m,i){return '<li><span class="nb">'+m.n+'</span><a href="#p'+m.n+'"><b>'+m.t+'</b><small>'+bridge[i]+'</small><span class="chip gold" style="margin-top:6px">'+m.nilai+'</span></a></li>';}).join('')+'</ol>';
+}
+function vPembelajaran(){
+  return '<div class="pagehead"><p class="eyebrow">Halaman 5</p><h1>Pembelajaran</h1><p class="lead">Pilih pertemuan. Setiap pertemuan punya susunan yang sama supaya mudah diikuti.</p></div>'+
+  '<div class="grid">'+M.map(function(m){return '<a class="card" href="#p'+m.n+'"><span class="eyebrow">Pertemuan '+m.n+'</span><h3>'+m.t+'</h3><p>'+m.tuj+'</p><div class="row">'+(S.done[m.n]?'<span class="chip ok">Selesai</span>':'<span class="chip">Belum selesai</span>')+scoreChip('lat'+m.n)+'</div></a>';}).join('')+'</div>';
+}
+function vMeeting(n){
+  var m=M[n-1],el=document.createElement('div');
+  var steps=['Tujuan pembelajaran','Apersepsi','Materi inti','Contoh soal dan pembahasan','Aktivitas interaktif','Latihan soal','Refleksi nilai Islam'];
+  var prev=n>1?'<a class="btn ghost" href="#p'+(n-1)+'">← Pertemuan '+(n-1)+'</a>':'';
+  var next=n<6?'<a class="btn" href="#p'+(n+1)+'">Pertemuan '+(n+1)+' →</a>':'<a class="btn" href="#evaluasi">Ke evaluasi →</a>';
+  el.innerHTML='<div class="pagehead"><p class="eyebrow">Pertemuan '+n+' dari 6</p><h1>'+m.t+'</h1></div>'+
+  '<div class="alur" aria-label="Loncat ke bagian">'+steps.map(function(s,i){return '<button type="button" data-s="'+(i+1)+'">'+(i+1)+'. '+s+'</button>';}).join('')+'</div>'+
+  '<section class="step" id="st1"><h2><span class="sn">1</span>Tujuan pembelajaran</h2><p>'+m.tuj+'</p></section>'+
+  '<section class="step" id="st2"><h2><span class="sn">2</span>Apersepsi</h2><p>'+m.ap+'</p></section>'+
+  '<section class="step" id="st3"><h2><span class="sn">3</span>Materi inti</h2>'+m.mat+'</section>'+
+  '<section class="step" id="st4"><h2><span class="sn">4</span>Contoh soal dan pembahasan</h2>'+m.cth+'</section>'+
+  '<section class="step" id="st5"><h2><span class="sn">5</span>Aktivitas interaktif</h2><div id="wg"></div></section>'+
+  '<section class="step" id="st6"><h2><span class="sn">6</span>Latihan soal</h2><div id="lat"></div></section>'+
+  '<section class="step islam" id="st7"><h2><span class="sn">7</span>Refleksi nilai Islam · '+m.nilai+'</h2>'+
+  '<div class="quote">'+m.ref.dalil+'<small>'+m.ref.src+'</small></div><p><b>Kaitan dengan matematika.</b> '+m.ref.kait+'</p>'+
+  '<div class="fld"><label for="note">Refleksimu: '+m.ref.tanya+'</label><textarea id="note" placeholder="Tulis refleksimu di sini. Tersimpan otomatis di perangkat ini."></textarea></div></section>'+
+  '<div class="row" style="justify-content:space-between"><div class="row">'+prev+'<button class="btn ghost" id="fin" type="button"></button></div>'+next+'</div>';
+  el.querySelectorAll('.alur button').forEach(function(b){b.addEventListener('click',function(){var t=el.querySelector('#st'+b.dataset.s);if(t)t.scrollIntoView({block:'start'});});});
+  var ta=$('#note',el);ta.value=S.notes[n]||'';
+  ta.addEventListener('input',function(){S.notes[n]=ta.value;save();});
+  var fin=$('#fin',el);
+  function pf(){fin.textContent=S.done[n]?'Selesai ✓ (batalkan)':'Tandai selesai';var sl=document.querySelector('#sublist a[href="#p'+n+'"]');if(sl)sl.classList.toggle('done',!!S.done[n]);}
+  fin.addEventListener('click',function(){S.done[n]=!S.done[n];save();pf();});pf();
+  setTimeout(function(){m.w($('#wg',el));quiz($('#lat',el),LAT[n],'lat'+n);},0);
+  return el;
+}
+function vAktivitas(){
+  var el=document.createElement('div');
+  el.innerHTML='<div class="pagehead"><p class="eyebrow">Halaman 6</p><h1>Aktivitas Interaktif</h1><p class="lead">Semua simulasi ada di dalam pertemuan masing-masing. Buka yang kamu butuhkan, atau uji kecepatanmu di tantangan di bawah.</p></div>'+
+  '<div class="grid">'+[['Ilustrasi rasio kotak','Hitung rasio kurma, air, dan seluruh kotak.'],['Simulasi rasio ekuivalen','Pengali dan penyederhanaan, plus mencocokkan pasangan.'],['Kalkulator harga satuan','Hitung harga per buah dan bandingkan dua penawaran.'],['Tabel perbandingan senilai','Ubah jumlah paket dan isi tabelnya.'],['Pekerja dan waktu','Lihat waktu berubah saat jumlah pekerja berubah.'],['Misi Berbagi','Lima tantangan perencanaan paket takjil.']].map(function(a,i){return '<a class="card" href="#p'+(i+1)+'"><span class="eyebrow">Pertemuan '+(i+1)+'</span><h3>'+a[0]+'</h3><p style="margin:0">'+a[1]+'</p></a>';}).join('')+'</div>'+
+  '<h2 style="margin-top:30px">Tantangan Cepat: Sederhanakan Rasio</h2><p>Sederhanakan 8 rasio secara beruntun. Tulis hasilnya seperti 2:3.</p><div id="game" class="box" style="max-width:520px"></div>';
+  setTimeout(function(){game($('#game',el));},0);
+  return el;
+}
+function game(root){
+  var pairs=[[1,2],[2,3],[3,4],[1,3],[2,5],[3,5],[4,5],[1,4],[3,7],[5,6],[2,7],[3,8]],N=8,n=0,score=0,streak=0,best=0,cur,k;
+  function start(){n=0;score=0;streak=0;best=0;next();}
+  function next(){
+    if(n>=N){var bs=S.scores.game;if(!bs||score>bs.s){S.scores.game={s:score,t:N};save();}
+      root.innerHTML='<div class="sum"><div><div>Hasil tantangan</div><b>'+score+' / '+N+'</b><div>Rentetan benar terpanjang: '+best+'</div></div><button class="btn" type="button" id="gr">Main lagi</button></div>';
+      $('#gr',root).addEventListener('click',start);return;}
+    cur=pairs[Math.floor(Math.random()*pairs.length)];k=2+Math.floor(Math.random()*8);
+    root.innerHTML='<div class="row" style="justify-content:space-between"><span class="chip">Soal '+(n+1)+' dari '+N+'</span><span class="chip gold">Rentetan '+streak+'</span></div>'+
+    '<p style="margin:14px 0 8px;font:700 1.6rem var(--f-head)">'+(cur[0]*k)+' : '+(cur[1]*k)+'</p><form class="fld" id="gf"><label for="gi">Bentuk paling sederhana</label><input type="text" id="gi" autocomplete="off" placeholder="contoh 2:3"><div class="row"><button class="btn" type="submit">Jawab</button></div></form><p class="fb" role="status" id="gfb"></p>';
+    $('#gi',root).focus();
+    $('#gf',root).addEventListener('submit',function(e){
+      e.preventDefault();var r=parseRatio($('#gi',root).value),fb=$('#gfb',root);
+      if(!r){fb.textContent='Tulis dengan format a:b, misalnya 2:3.';return;}
+      var ok=r[0]===cur[0]&&r[1]===cur[1];
+      if(ok){score++;streak++;if(streak>best)best=streak;}else streak=0;
+      fb.className='fb '+(ok?'ok':'no');
+      fb.textContent=ok?'Benar!':'Belum tepat. Jawabannya '+cur[0]+':'+cur[1]+' (dibagi '+k+').';
+      $('#gf button',root).disabled=true;$('#gi',root).disabled=true;n++;
+      setTimeout(next,ok?700:1800);
+    });
+  }
+  start();
+}
+function vEvaluasi(n){
+  var el=document.createElement('div');
+  if(!n){
+    el.innerHTML='<div class="pagehead"><p class="eyebrow">Halaman 7</p><h1>Evaluasi</h1><p class="lead">Kuis tiap pertemuan dan evaluasi gabungan. Skor terbaikmu tersimpan di perangkat ini.</p></div><div class="grid">'+
+    M.map(function(m){var k=KUIS[m.n];return '<a class="card" href="#evaluasi-'+m.n+'"><span class="eyebrow">'+(m.n<6?'Kuis '+m.n:'Evaluasi gabungan')+'</span><h3>'+m.s+'</h3><p>'+k.length+' soal</p>'+scoreChip('kuis'+m.n)+'</a>';}).join('')+'</div>'+
+    '<h3 style="margin-top:28px">Bentuk soal</h3><p>Pilihan ganda, benar atau salah, isian singkat, dan soal cerita. Untuk soal cerita, tuliskan juga langkah penyelesaianmu di buku catatan sebelum mengisi jawaban.</p>';
+    return el;
+  }
+  var m=M[n-1];
+  el.innerHTML='<div class="pagehead"><p class="eyebrow">'+(n<6?'Kuis '+n:'Evaluasi gabungan')+' · '+KUIS[n].length+' soal</p><h1>'+m.s+'</h1><p><a href="#evaluasi">← Semua kuis</a></p></div><div id="kq"></div><div class="row" style="margin-top:14px">'+(n<6?'<a class="btn" href="#evaluasi-'+(n+1)+'">Kuis berikutnya →</a>':'<a class="btn" href="#islam">Ke Integrasi Islam →</a>')+'</div>';
+  setTimeout(function(){quiz($('#kq',el),KUIS[n],'kuis'+n);},0);
+  return el;
+}
+function vIslam(){
+  var el=document.createElement('div');
+  el.innerHTML='<div class="pagehead"><p class="eyebrow">Halaman 8</p><h1>Integrasi Islam</h1><p class="lead">Nilai Islam hadir di setiap pertemuan dan terhubung langsung dengan cara kita menghitung dan berbagi.</p></div>'+
+  '<div class="note" style="margin-bottom:18px"><b>Catatan penggunaan</b>Ayat dan hadis ditulis dalam terjemah makna. Untuk kutipan lengkap, rujuklah Al-Qur\'an dan terjemahnya (Kementerian Agama) serta kitab hadis aslinya, dan konsultasikan dengan guru Pendidikan Agama Islam.</div>'+
+  '<div class="grid">'+M.map(function(m){return '<div class="card"><span class="eyebrow">Pertemuan '+m.n+' · '+m.s+'</span><h3>'+m.nilai+'</h3><div class="quote" style="margin-bottom:.5em">'+m.ref.dalil+'<small>'+m.ref.src+'</small></div><p style="color:var(--ink)">'+m.ref.kait+'</p></div>';}).join('')+'</div>'+
+  '<h2 style="margin-top:30px">Matematika sebagai jalan berbuat adil dan amanah</h2><p>Rasio membantu kita menakar dengan tepat, membagi dengan adil, menghitung harga dengan jujur, dan menggunakan bahan tanpa berlebih-lebihan. Ketepatan menghitung bukan tujuan akhir, tetapi cara menjaga hak orang lain dan menunaikan amanah.</p>'+
+  '<h2 style="margin-top:30px">Jurnal refleksimu</h2><p>Refleksi yang kamu tulis di tiap pertemuan terkumpul di sini.</p><div id="jr"></div>';
+  var jr=$('#jr',el),any=false,h='';
+  M.forEach(function(m){if(S.notes[m.n]&&S.notes[m.n].trim()){any=true;h+='<div class="card" style="margin-bottom:10px"><span class="eyebrow">Pertemuan '+m.n+' · '+m.nilai+'</span><p style="color:var(--ink);margin:0;white-space:pre-wrap">'+esc(S.notes[m.n])+'</p></div>';}});
+  jr.innerHTML=any?h:'<p class="chip">Belum ada refleksi. Tulis di bagian terakhir tiap pertemuan.</p>';
+  return el;
+}
+function vReferensi(){
+  return '<div class="pagehead"><p class="eyebrow">Halaman 9</p><h1>Referensi</h1></div>'+
+  '<div class="grid2"><div class="card"><h3>Materi matematika</h3><ul><li>Buku teks Matematika SMP/MTs kelas VII, Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi (bab rasio dan perbandingan).</li><li>Capaian Pembelajaran Matematika fase D, Kurikulum Merdeka.</li></ul></div>'+
+  '<div class="card"><h3>Rujukan keislaman</h3><ul><li>Al-Qur\'an dan Terjemahnya, Kementerian Agama RI: QS. Al-Ma\'idah: 2; Al-An\'am: 152; Ar-Rahman: 7–9; Al-Muthaffifin: 1–3; Al-A\'raf: 31; Al-Isra\': 26–27; An-Nisa\': 58.</li><li>Hadis: Shahih al-Bukhari dan Shahih Muslim (jual beli, persaudaraan mukmin, tanggung jawab pemimpin); Sunan at-Tirmidzi (memberi makan orang berpuasa).</li></ul></div>'+
+  '<div class="card"><h3>Gambar dan desain</h3><p style="margin:0;color:var(--ink)">Seluruh ilustrasi (blok kurma dan air, grafik batang, ikon) dibuat sendiri dengan kode untuk media ini, tanpa gambar pihak lain. Tipografi memakai Bricolage Grotesque dan Plus Jakarta Sans dari Google Fonts.</p></div>'+
+  '<div class="card"><h3>Pengembang</h3><p style="margin:0;color:var(--ink)">Disusun oleh Nama Mahasiswa sebagai Tugas 3 mata kuliah Integrasi Pendidikan Matematika dan Islam. Ganti nama pada bagian ini dan bagian kaki halaman sebelum dikumpulkan.</p></div></div>';
+}
+
+/* ---------- router ---------- */
+var app=$('#app'),navEl=$('#nav'),sub=$('#subnav'),subl=$('#sublist');
+function route(){
+  var id=(location.hash||'#beranda').slice(1),cur='beranda',content;
+  var mm=id.match(/^p([1-6])$/),em=id.match(/^evaluasi-([1-6])$/);
+  if(mm){cur='pembelajaran';content=vMeeting(+mm[1]);}
+  else if(em){cur='evaluasi';content=vEvaluasi(+em[1]);}
+  else{
+    var map={beranda:vBeranda,petunjuk:vPetunjuk,tujuan:vTujuan,peta:vPeta,pembelajaran:vPembelajaran,aktivitas:vAktivitas,evaluasi:function(){return vEvaluasi(0);},islam:vIslam,referensi:vReferensi};
+    if(!map[id])id='beranda';cur=id;content=map[id]();
+  }
+  app.innerHTML='';
+  if(typeof content==='string'){app.innerHTML=content;}else app.appendChild(content);
+  navEl.innerHTML=NAV.map(function(x){return '<li><a href="#'+x[0]+'"'+(x[0]===cur?' aria-current="page"':'')+'>'+x[1]+'</a></li>';}).join('');
+  if(cur==='pembelajaran'){
+    sub.hidden=false;
+    subl.innerHTML=M.map(function(m){return '<li><a href="#p'+m.n+'" class="'+(S.done[m.n]?'done':'')+'"'+(mm&&+mm[1]===m.n?' aria-current="page"':'')+'>P'+m.n+' '+m.s+'</a></li>';}).join('');
+  }else sub.hidden=true;
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+route();
+})();
+</script>
+
+</body></html>
